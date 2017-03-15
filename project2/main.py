@@ -75,7 +75,9 @@ for current_time in range(SIMULATION_TIME):
                 generate_process_time(size),
                 i,
                 generate_destination(number_of_host),
-                False
+                False,
+                size,
+                current_time
             )
             current_host.schedule(data_frame)
             arrival_times[i] = generate_arrival_time(arrival_rate)
@@ -85,25 +87,28 @@ for current_time in range(SIMULATION_TIME):
     for current_frame in channel:
         current_frame.process_time -= 1
         current_frame.is_dirty = current_frame.is_dirty or channel_has_conflict
-        if current_frame.process_time <= 0 and not current_frame.is_dirty:
-            if current_frame.is_ack:  # received ack frame
-                # complete timer
-                hosts[current_frame.destination].reset(
-                    DEFAULT_DIFS,
-                    DEFAULT_SIFS
-                )
-            else:  # received data frame
-                transmitted_bytes += current_frame.bytes
-                total_delay += current_time - current_frame.scheduled_time
-                ack_frame = frame.Frame(
-                    ACK_FRAME_SIZE,
-                    current_time,
-                    generate_process_time(ACK_FRAME_SIZE),
-                    current_frame.destination,
-                    current_frame.source,
-                    True,
-                )
-                hosts[current_frame.destination].schedule(ack_frame)
+        if current_frame.process_time <= 0:
+            if not current_frame.is_dirty:  # valid frame transferred
+                if current_frame.is_ack:  # received ack frame
+                    # complete timer
+                    hosts[current_frame.destination].reset(
+                        DEFAULT_DIFS,
+                        DEFAULT_SIFS
+                    )
+                    transmitted_bytes += current_frame.data_frame_size
+                    total_delay += current_frame.data_frame_scheduled_time
+                else:  # received data frame
+                    ack_frame = frame.Frame(
+                        ACK_FRAME_SIZE,
+                        current_time,
+                        generate_process_time(ACK_FRAME_SIZE),
+                        current_frame.destination,
+                        current_frame.source,
+                        True,
+                        current_frame.bytes,
+                        current_frame.scheduled_time
+                    )
+                    hosts[current_frame.destination].schedule(ack_frame)
     # remove delivered frames in channel
     channel[:] = [x for x in channel if x.process_time > 0]
     # send frames

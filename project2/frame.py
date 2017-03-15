@@ -6,7 +6,9 @@ class Frame(object):
         process_time,
         source,
         destination,
-        is_ack
+        is_ack,
+        data_frame_size,
+        data_frame_scheduled_time,
     ):
         self.bytes = bytes
         self.scheduled_time = scheduled_time
@@ -14,4 +16,6 @@ class Frame(object):
         self.source = source
         self.destination = destination
         self.is_ack = is_ack
+        self.data_frame_size = data_frame_size
+        self.data_frame_scheduled_time = data_frame_scheduled_time
         self.is_dirty = False
