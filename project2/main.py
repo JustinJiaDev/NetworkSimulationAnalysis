@@ -131,6 +131,6 @@ throughput = transmitted_bytes / simulation_time_in_seconds
 average_delay = total_delay_in_seconds / throughput
 
 print("--------------------------------------")
-print("Throughtput: " + str(throughput) + " bytes/s")
+print("Throughput: " + str(throughput) + " bytes/s")
 print("Average network delay: " + str(average_delay) + " s")
 print("--------------------------------------")
