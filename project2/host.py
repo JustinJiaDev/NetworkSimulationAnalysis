@@ -44,16 +44,16 @@ class Host(object):
                             self.difs -= 1
                         else:
                             self.current_frame = self.frames.pop(0)
-                            self.timeout = timeout
                             self.reset(default_difs, default_sifs)
+                            self.timeout = timeout
                             return self.current_frame
                     else:  # is backoff state
                         if self.backoff > 0:
                             self.backoff -= 1
                         else:
                             self.current_frame = self.frames.pop(0)
-                            self.timeout = timeout
                             self.reset(default_difs, default_sifs)
+                            self.timeout = timeout
                             return self.current_frame
                 else:
                     if self.backoff == -1:  # is difs state
