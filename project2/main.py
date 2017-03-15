@@ -9,7 +9,6 @@ MAX_FRAME_SIZE = 1544
 ACK_FRAME_SIZE = 64
 BITS_PER_BYTE = 8
 WIRELESS_CAPACITY = (11 * (10 ** 6))  # 11 Mbps
-SENSE_CHANNEL_INTERVAL = 100  # 0.01 ms
 BASE_TIME = 100  # 0.01 ms * BASE_TIME = 1 ms
 TRANSMISSION_SPEED = (11 * (10 ** 6)) / ((10 ** 3) * BASE_TIME)
 SIMULATION_TIME = 10 * (10 ** 3) * BASE_TIME  # 10 s
@@ -63,7 +62,7 @@ for i in range(number_of_host):
 # main
 for current_time in range(SIMULATION_TIME):
     channel_is_idle = len(channel) == 0
-    channel_has_conflicts = len(channel) > 1
+    channel_has_conflict = len(channel) > 1
     # schedule data frames
     for i in range(number_of_host):
         current_host = hosts[i]
@@ -85,7 +84,7 @@ for current_time in range(SIMULATION_TIME):
     # update frames in channel
     for current_frame in channel:
         current_frame.process_time -= 1
-        current_frame.is_dirty = channel_has_conflicts
+        current_frame.is_dirty = current_frame.is_dirty or channel_has_conflict
         if current_frame.process_time <= 0 and not current_frame.is_dirty:
             if current_frame.is_ack:  # received ack frame
                 # complete timer
