@@ -88,7 +88,11 @@ for current_time in range(SIMULATION_TIME):
         current_frame.is_dirty = channel_has_conflicts
         if current_frame.process_time <= 0 and not current_frame.is_dirty:
             if current_frame.is_ack:  # received ack frame
-                hosts[current_frame.destination].timeout = -1  # complete timer
+                # complete timer
+                hosts[current_frame.destination].reset(
+                    DEFAULT_DIFS,
+                    DEFAULT_SIFS
+                )
             else:  # received data frame
                 transmitted_bytes += current_frame.bytes
                 total_delay += current_time - current_frame.scheduled_time
